@@ -47,7 +47,13 @@ describe DockingStation do
 
   describe '#release_bike' do
     it 'releases a bike' do
-      bike = double(:bike)
+      #bike = double(:bike)
+     #allow(bike).to receive(:working?).and_return(true)
+      
+      
+      bike = double(:bike, :working? => true)
+      allow(bike).to receive(:broken?)
+      
       expect(bike).to be_working
       subject.dock(bike)
       expect(subject.release_bike).to eq bike
@@ -60,8 +66,10 @@ describe DockingStation do
     it 'raises an error if someone tries to release a broken bike' do
       #bike2 = Bike.new
       #subject.dock(bike2)
-      bike = double(:bike)
-      bike.report_broken
+      bike = double(:bike, :broken? => "broken")
+      #allow(bike).to receive(:broken?)
+      #allow(bike).to receive(:report_broken).and_return(true)
+      #bike.report_broken
       subject.dock(bike)
       expect {subject.release_bike}.to raise_error("No bikes available")
     end
@@ -75,7 +83,8 @@ describe DockingStation do
     
     it 'allow a broken bike to be docked' do
       bike = double(:bike)
-      bike.report_broken
+      bike = double(:bike, :report_broken => true, :broken? => "broken")
+      #bike.report_broken
       subject.dock(bike)
       expect(bike).to be_broken 
     end
